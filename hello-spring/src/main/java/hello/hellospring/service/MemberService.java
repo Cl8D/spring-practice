@@ -6,11 +6,15 @@ import hello.hellospring.repository.MemoryMemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
 // @service를 활용하면 spring container에 memberserivce를 등록할 수 있음!
 // @Service
+
+// JPA를 사용하기 위해서는 트랜잭션이 항상 있어야 함
+@Transactional
 public class MemberService {
     private final MemberRepository memberRepository;
 
@@ -31,6 +35,22 @@ public class MemberService {
         validateDuplicateMember(member);
         memberRepository.save(member);
         return member.getId();
+        /*
+        // 기본 시간 측정 코드
+        long start = System.currentTimeMillis();
+        try {
+            // 같은 이름이 있는 중복 회원 방지
+            // ifPresent를 사용하면 null을 체크하는 if문을 안 사용할 수 있음!
+            validateDuplicateMember(member);
+            memberRepository.save(member);
+            return member.getId();
+        } finally {
+            long finish = System.currentTimeMillis();
+            long timeMs = finish - start;
+            System.out.println("join = " + timeMs + "ms");
+        }
+        */
+
     }
 
     private void validateDuplicateMember(Member member) {
