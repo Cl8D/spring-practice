@@ -1,11 +1,15 @@
 package hello.core;
 
+import hello.core.member.MemberRepository;
+import hello.core.member.MemoryMemberRepository;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 
 @Configuration
 @ComponentScan(
+        basePackages = "hello.core",
         excludeFilters = @ComponentScan.Filter(
                 type= FilterType.ANNOTATION,
                 classes = Configuration.class)
@@ -16,5 +20,11 @@ import org.springframework.context.annotation.FilterType;
 // 직접 등록해주는 코드니까 충돌나게 하지 않기 위해서!
 public class AutoAppConfig {
 
-
+    // 기존의 memoryMemberRepository와 동일한 이름의 빈 등록하기
+    /*
+    @Bean(name = "memoryMemberRepository")
+    public MemberRepository memberRepository() {
+        return new MemoryMemberRepository();
+    }
+    */
 }
