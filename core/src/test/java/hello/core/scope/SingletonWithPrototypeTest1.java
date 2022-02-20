@@ -2,12 +2,14 @@ package hello.core.scope;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Scope;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.inject.Provider;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -41,13 +43,42 @@ public class SingletonWithPrototypeTest1 {
         int count2 = clientBean2.logic();
 
         // 그래서 동일한 애를 사용하기 때문에 0->1->2로 증가하는 것것
-       assertThat(count2).isEqualTo(2);
+        //assertThat(count2).isEqualTo(2);
+
+        // 프로토타입 + 싱글톤
+        assertThat(count2).isEqualTo(1);
     }
 
     @Scope("singleton")
     static class ClientBean {
-        private final PrototypeBean prototypeBean;
 
+        // 자바에서 제공하는 Provider 사용
+        @Autowired
+        private Provider<PrototypeBean> provider;
+
+        public int logic() {
+            PrototypeBean prototypeBean = provider.get();
+            prototypeBean.addCount();
+            int count = prototypeBean.getCount();
+            return count;
+        }
+
+        /*
+        // 싱글톤 빈과 함께 사용하기 위해 Provider 사용
+        @Autowired
+        private ObjectProvider<PrototypeBean> prototypeBeanProvider;
+
+        public int logic() {
+            // getObject를 호출했을 때 스프링 컨테이너에서 프로토타입 빈을 찾아서 호출해준다.
+            PrototypeBean prototypeBean = prototypeBeanProvider.getObject();
+            prototypeBean.addCount();
+            int count = prototypeBean.getCount();
+            return count;
+        }
+        */
+
+        /*
+        private final PrototypeBean prototypeBean;
         // 2. 이때, 생성자에 붙은 autowired를 확인
         // prototypeBean을 스프링 컨테이너에게 요청하게 된다.
         // 이때, 컨테이너는 프로토타입 빈을 만들어서 던져준다.
@@ -65,6 +96,7 @@ public class SingletonWithPrototypeTest1 {
             int count = prototypeBean.getCount();
             return count;
         }
+         */
     }
 
     @Scope("prototype")
