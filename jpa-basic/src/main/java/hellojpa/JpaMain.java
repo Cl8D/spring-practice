@@ -114,6 +114,7 @@ public class JpaMain {
             System.out.println("===이 선 이전에 쿼리문이 호출되는가?====");
             */
 
+            /*
             // 준영속 상태 실습
             // 현재 이 멤버는 영속 상태이다. (기존에 등록했던 애를 조회하니까 1차 캐시에서 가져옴)
             Member member = em.find(Member.class, 150L);
@@ -130,6 +131,14 @@ public class JpaMain {
             // 이후 똑같은 멤버를 다시 조회하게 된다면, 1차 캐시가 비어있기 때문에 재등록하게 된다.
             // 결과적으로 2번의 쿼리문이 출력됨. (위에서 em.find 했을 때 + 지금)
             Member member2 = em.find(Member.class, 150L);
+            */
+
+            // 기본 키 매핑
+            Member member = new Member();
+            member.setUsername("C");
+
+            em.persist(member);
+
 
             // 커밋 -> 이때 db에 쿼리가 날라가서 저장되는 것임.
             tx.commit();
