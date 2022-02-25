@@ -4,6 +4,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import java.util.List;
 
 public class JpaMain {
     public static void main(String[] args) {
@@ -133,11 +134,65 @@ public class JpaMain {
             Member member2 = em.find(Member.class, 150L);
             */
 
+            /*
             // 기본 키 매핑
             Member member = new Member();
             member.setUsername("C");
 
             em.persist(member);
+            */
+
+            // 외래 키 식별자를 직접 다루기
+            Team team = new Team();
+            team.setName("TeamA");
+
+            // 영속 상태가 되면 pk 값이 세팅되기 때문에
+            // id가 알아서 설정이 된다.
+            em.persist(team);
+
+            Member member = new Member();
+            member.setUsername("member1");
+            //member.setTeamId(team.getId());
+
+            // 이제 이렇게만 해주면 JPA가 알아서 매핑을 시켜준다.
+            // member.changeTeam(team);
+            em.persist(member);
+
+            // 양방향 연관 관계. 위의 코드 대신에 사용한 것.
+            team.addMember(member);
+
+            // 1차 캐시에서 가져옴을 방지 (db에서 가져오도록)
+            em.flush();
+            em.clear();
+
+
+            // 단방향 연관 관계
+            // 식별자로 조회하는 방법
+            // 연관관계 없이 조회하다 보니까 객체 지향스럽지 않다.
+            /*
+            Member findMember = em.find(Member.class, member.getId());
+
+            //Long findTeamId = findMember.getTeamId();
+            //Team findTeam = em.find(Team.class, findTeamId);
+
+            // 마찬가지로 위의 두 줄을 한 줄로 줄일 수 있다.
+            // 바로 team을 가져올 수 있게 된다.
+            Team findTeam = findMember.getTeam();
+            */
+
+            // 양방향 연관관계
+            /*
+            Member findMember = em.find(Member.class, member.getId());
+
+            List<Member> members = findMember.getTeam().getMembers();
+
+            for(Member m : members) {
+                System.out.println("m.getUsername() = " + m.getUsername());
+            }
+            */
+
+
+
 
 
             // 커밋 -> 이때 db에 쿼리가 날라가서 저장되는 것임.

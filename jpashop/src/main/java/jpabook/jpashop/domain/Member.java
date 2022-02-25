@@ -1,6 +1,8 @@
 package jpabook.jpashop.domain;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Member {
@@ -14,6 +16,14 @@ public class Member {
     private String city;
     private String street;
     private String zipcode;
+
+
+    // 양방향 설계
+    // Order의 member는 manyToOne이었는데, 이에 대한 역방향 설계
+    // 연관관계의 주인을 member로 지정한다. 왜냐면 외래키가 Order의 member_id니깐
+    @OneToMany(mappedBy = "member")
+    private List<Order> orders = new ArrayList<>();
+
 
     public Long getId() {
         return id;

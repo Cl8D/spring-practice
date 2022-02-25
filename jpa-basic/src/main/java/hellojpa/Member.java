@@ -71,6 +71,7 @@ public class Member {
     }
     */
 
+    /*
     // 기본 키 매핑
     // 내가 직접 세팅을 하고 싶다면 @Id
     @Id
@@ -100,5 +101,64 @@ public class Member {
     public void setUsername(String username) {
         this.username = username;
     }
+    */
+
+
+    // 단방향 연관관계
+    // 참조 대신에 외래 키를 그대로 사용
+    @Id @GeneratedValue
+    @Column(name = "MEMBER_ID")
+    private Long id;
+
+    @Column(name= "USERNAME")
+    private String username;
+
+    //@Column(name = "TEAM_ID")
+    //private Long teamId;
+
+    // 하나의 팀에 여러 멤버가 들어올 수 있기 때문에,
+    // Member 클래스의 입장에서는 ManyToOne을 설정해줘야 한다.
+    @ManyToOne
+    // 그리고 fk값과 매핑하기 위해
+    // db에 값을 변경할 때는 연관관계의 주인이 얘이기 때문에 얘로만 참조를 진행한다.
+    @JoinColumn(name="TEAM_ID")
+    private Team team;
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+
+    /*
+    // 조금 더 중요한 함수임을 알려주기 위해 getter-setter 관례에서 벗어나도록
+    public void changeTeam(Team team) {
+        this.team = team;
+
+        // 연관관계 편의 메소드.
+        // main 대신에 여기서 member 자기 자신을 넣어준다.
+        // 양방향 연관관계를 주입해주기.
+        team.getMembers().add(this);
+    }
+    */
 }
 
