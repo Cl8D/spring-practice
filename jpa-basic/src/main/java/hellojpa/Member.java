@@ -1,7 +1,9 @@
 package hellojpa;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 // JPA가 사용한다는 걸 알려주기 위해서 @entity 필요함!
 @Entity
@@ -116,6 +118,7 @@ public class Member {
     //@Column(name = "TEAM_ID")
     //private Long teamId;
 
+    /*
     // 하나의 팀에 여러 멤버가 들어올 수 있기 때문에,
     // Member 클래스의 입장에서는 ManyToOne을 설정해줘야 한다.
     @ManyToOne
@@ -123,9 +126,36 @@ public class Member {
     // db에 값을 변경할 때는 연관관계의 주인이 얘이기 때문에 얘로만 참조를 진행한다.
     @JoinColumn(name="TEAM_ID")
     private Team team;
+    */
 
 
-    public Long getId() {
+    // 일대다 양방향 매핑. 읽기 전용 매핑이 생기는 것.
+    @ManyToOne
+    @JoinColumn(name="TEAM_ID", insertable = false, updatable = false)
+    private Team team;
+
+
+    // 일대일 주 테이블 외래키 단방향
+    @OneToOne
+    @JoinColumn(name="LOCKER_ID")
+    private Locker locker;
+
+
+    /*
+    // 다대다 관계
+    @ManyToMany
+    // 연결 테이블 지정하기
+    @JoinTable(name="MEMBER_PRODUCT")
+    private List<Product> products = new ArrayList<>();
+    */
+
+    // 다대다 -> 일대다, 다대일로 변경
+    @OneToMany(mappedBy = "member")
+    private List<MemberProduct> memberProducts = new ArrayList<>();
+
+
+
+  public Long getId() {
         return id;
     }
 

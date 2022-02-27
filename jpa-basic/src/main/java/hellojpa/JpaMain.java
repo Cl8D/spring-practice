@@ -142,6 +142,7 @@ public class JpaMain {
             em.persist(member);
             */
 
+            /*
             // 외래 키 식별자를 직접 다루기
             Team team = new Team();
             team.setName("TeamA");
@@ -164,7 +165,7 @@ public class JpaMain {
             // 1차 캐시에서 가져옴을 방지 (db에서 가져오도록)
             em.flush();
             em.clear();
-
+            */
 
             // 단방향 연관 관계
             // 식별자로 조회하는 방법
@@ -190,6 +191,25 @@ public class JpaMain {
                 System.out.println("m.getUsername() = " + m.getUsername());
             }
             */
+
+
+            /*
+            // 일대다 연관관계 - 단방향
+            Member member = new Member();
+            member.setUsername("member1");
+            em.persist(member);
+
+            Team team = new Team();
+            team.setName("teamA");
+
+            // 팀 엔티티를 저장할 때 역테이블에 가서 fk를 다시 업데이트를 해야 한다는 점...
+            // 즉, 쿼리가 한 번 더 나가게 된다.
+            team.getMembers().add(member);
+            em.persist(team);
+            */
+
+
+
 
 
 

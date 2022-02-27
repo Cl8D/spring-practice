@@ -31,11 +31,16 @@ public class Order {
     @OneToMany(mappedBy = "order")
     private List<OrderItem> orderItems = new ArrayList<>();
 
-
     private LocalDateTime orderDate;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
+
+    // 일대일 매핑 (order <-> delivery)
+    @OneToOne
+    @JoinColumn(name="DELIVERY_ID")
+    private Delivery delivery;
+
 
     public void addOrderItem(OrderItem orderItem) {
         orderItems.add(orderItem);
