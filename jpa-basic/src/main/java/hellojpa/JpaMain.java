@@ -4,8 +4,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 public class JpaMain {
     public static void main(String[] args) {
@@ -346,6 +350,115 @@ public class JpaMain {
             //em.persist(child1);
             //em.persist(child2);
             */
+
+
+            /*
+            // 값 타입 컬렉션 저장
+            Member member = new Member();
+            member.setUsername("member1");
+            member.setHomeAddress(new Address("homeCity", "street", "zipcode"));
+
+            member.getFavoriteFoods().add("치킨");
+            member.getFavoriteFoods().add("피자");
+            member.getFavoriteFoods().add("아이스크림");
+
+            //member.getAddressHistory().add(new Address("old1", "street", "zipcode"));
+            //member.getAddressHistory().add(new Address("old2", "street", "zipcode"));
+
+            // 값 타입 컬렉션의 대안
+            // 값 타입 엔티티로 만들게 되면 각각의 값들을 수정할 수도 있음.
+            member.getAddressHistory().add(new AddressEntity("old1", "street", "zipcode"));
+            member.getAddressHistory().add(new AddressEntity("old2", "street", "zipcode"));
+
+            // 쿼리문을 살펴보면
+            // Member 1번 / address history 2번 / favorite food 3번 insert.
+            // member만 persist 했지만 값 타입 컬렉션들은 테이블이 함께 만들어져서 디비에 저장되어 있는 걸 볼 수 있다.
+            // 값 타입 컬렉션의 생명주기는 member와 동일하다!
+            em.persist(member);
+
+            em.flush();
+            em.clear();
+
+            // 값 타입 조회
+            System.out.println("========================");
+            // 쿼리를 살펴보면 member만 가져오는 걸 확인할 수 있는데,
+            // 즉, 값 타입 컬렉션은 지연 로딩 전략을 사용한다는 걸 알 수 있다.
+            // 당연히 Member에 소속된 homeAddress(city, street, zipcode)는 함께 불러와지지만,
+            // 컬렉션들은 지연 로딩이다! (새로 만들어진 테이블들)
+            Member findMember = em.find(Member.class, member.getId());
+            */
+
+            // 지연 로딩이기 때문에 실제로 사용할 때 가져오는 걸 볼 수 있다.
+            // 여기서 쿼리문으로 select 1번.
+            /*
+            List<Address> addressHistory = findMember.getAddressHistory();
+            for (Address address : addressHistory) {
+                System.out.println("address = " + address.getCity());
+            }
+            */
+
+            /*
+            // 여기서 select 1번 더.
+            Set<String> favoriteFoods = findMember.getFavoriteFoods();
+            for (String favoriteFood : favoriteFoods) {
+                System.out.println("favoriteFood = " + favoriteFood);
+            }
+
+
+            // 값 타입 수정
+            // 일부 수정이 아닌, 인스턴스 자체를 교체해야 한다!
+            Address a = findMember.getHomeAddress();
+            // homeCity -> newCity
+            // 전체를 다 변경한 것을 볼 수 있다! - 업데이트 쿼리 나감.
+            findMember.setHomeAddress(new Address("newCity", a.getStreet(), a.getZipcode()));
+
+            // 값 타입 컬렉션 수정
+            // 치킨 -> 한식으로 변경
+            // favoriteFoods 내부의 각각의 값들은 전부 string이기 때문에 변경이 불가능.
+            // 값 자체를 갈아끼워야 하니까 remove 한 뒤 add를 다시 진행해줘야 한다.
+            // 쿼리를 보면 member_id와 food_name을 통해 delete 후, 다시 insert를 해준당.
+            findMember.getFavoriteFoods().remove("치킨");
+            findMember.getFavoriteFoods().add("한식");
+
+            // old1 -> new1으로 변경
+            // 값 타입이기 때문에 address를 통으로 교체해야 한다.
+            // 기본적으로 내부 파라미터를 ==로 찾아낸다. (override 부분 참조)
+
+            // 쿼리를 생각해보자.
+            // 먼저 값타입 (addressHistory)를 변경하게 되면 이와 관련된 모든 데이터를 삭제한다.
+            // 그리고, 해당 컬렉션에 남은 데이터만큼 다시 insert를 진행한다.
+            // 사실상 이게 매우 비효율적이기 때문에, 값 타입 컬렉션을 일대다 관계로 고려하는 게 더 낫다.
+            // findMember.getAddressHistory().remove(new Address("old1", "street", "zipcode"));
+            // findMember.getAddressHistory().add(new Address("new1", "street", "zipcode"));
+            */
+
+
+            /*
+            // JPQL
+            List<Member> result = em.createQuery(
+                    "select m from Member as m where m.username like '%kim%'",
+                    Member.class
+            ).getResultList();
+
+            for (Member member : result) {
+                System.out.println("member = " + member);
+            }
+            */
+
+            /*
+            // criteria
+            // 쿼리를 코드로 짜는 느낌?
+            // 동적 쿼리를 짜기 쉽고, 오류 발견이 쉽다. 근데 개복잡함
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Member> query = cb.createQuery(Member.class);
+
+            Root<Member> m = query.from(Member.class);
+            CriteriaQuery<Member> cq = query.select(m).where(cb.equal(m.get("username"), "kim"));
+            List<Member> resultList = em.createQuery(cq).getResultList();
+            */
+
+
+
 
             // 커밋 -> 이때 db에 쿼리가 날라가서 저장되는 것임.
             tx.commit();

@@ -13,10 +13,13 @@ public class Member extends BaseEntity {
     @Column(name="MEMBER_ID")
     private Long id;
     private String name;
-    private String city;
-    private String street;
-    private String zipcode;
 
+    //private String city;
+    //private String street;
+    //private String zipcode;
+
+    @Embedded
+    private Address address;
 
     // 양방향 설계
     // Order의 member는 manyToOne이었는데, 이에 대한 역방향 설계
@@ -41,6 +44,7 @@ public class Member extends BaseEntity {
         this.name = name;
     }
 
+    /*
     public String getCity() {
         return city;
     }
@@ -64,4 +68,22 @@ public class Member extends BaseEntity {
     public void setZipcode(String zipcode) {
         this.zipcode = zipcode;
     }
+    */
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
+    }
 }
+

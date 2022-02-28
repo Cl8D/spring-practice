@@ -2,9 +2,9 @@ package hellojpa;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+
+import static javax.persistence.CascadeType.*;
 
 // JPA가 사용한다는 걸 알려주기 위해서 @entity 필요함!
 @Entity
@@ -117,17 +117,52 @@ public class Member {
     private String username;
 
 
+    /*
     // 임베디드 타입
     @Embedded
     private Period workPeriod;
 
     @Embedded
     private Address homeAddress;
+    */
 
     // 같은 타입을 2번 사용하고 싶을 때
     //@Embedded
     //@AttributeOverrides(여기에 원래 값을 써야 하는데 귀찮으니 생략)
     //private Address workAddress;
+
+
+    // 값 타입 컬렉션
+    @Embedded
+    private Address homeAddress;
+
+    // joinColumn을 통해서 외래키 잡아주기
+    // 리스트, 집합 같은 컬렉션을 ElementCollection 사용
+    // 즉, favorite_food라는 이름을 가진 별도의 테이블을 생성하는 코드이며,
+    // 이에 해당하는 fk를 member_id로 잡음을 의미함.
+    @ElementCollection
+    @CollectionTable(name="FAVORITE_FOOD",
+    joinColumns = @JoinColumn(name="MEMBER_ID"))
+    // 컬럼명을 지정해준다. 어차피 String 형이어서 ㄱㅊ음.
+    @Column(name="FOOD_NAME")
+    private Set<String> favoriteFoods = new HashSet<>();
+
+    /*
+    // 값 타입 컬렉션. 사실 매우 비효율적.
+    @ElementCollection
+    @CollectionTable(name="ADDRESS",
+    joinColumns = @JoinColumn(name="MEMBER_ID"))
+    private List<Address> addressHistory = new ArrayList<>();
+    */
+
+    // 값 타입 컬렉션의 대안 -> 엔티티로 매핑하기
+    // 일대다 단방향 매핑으로 풀어나가기
+    @OneToMany(cascade = ALL, orphanRemoval = true)
+    @JoinColumn(name="MEMBER_ID")
+    private List<AddressEntity> addressHistory = new ArrayList<>();
+
+
+
 
     //@Column(name = "TEAM_ID")
     //private Long teamId;
@@ -176,6 +211,8 @@ public class Member {
     private List<MemberProduct> memberProducts = new ArrayList<>();
     */
 
+
+
     /*
     public Long getId() {
         return id;
@@ -213,5 +250,55 @@ public class Member {
         team.getMembers().add(this);
     }
     */
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Address getHomeAddress() {
+        return homeAddress;
+    }
+
+    public void setHomeAddress(Address homeAddress) {
+        this.homeAddress = homeAddress;
+    }
+
+    public Set<String> getFavoriteFoods() {
+        return favoriteFoods;
+    }
+
+    public void setFavoriteFoods(Set<String> favoriteFoods) {
+        this.favoriteFoods = favoriteFoods;
+    }
+
+    /*
+    public List<Address> getAddressHistory() {
+        return addressHistory;
+    }
+
+    public void setAddressHistory(List<Address> addressHistory) {
+        this.addressHistory = addressHistory;
+    }
+    */
+
+    public List<AddressEntity> getAddressHistory() {
+        return addressHistory;
+    }
+
+    public void setAddressHistory(List<AddressEntity> addressHistory) {
+        this.addressHistory = addressHistory;
+    }
 }
 
