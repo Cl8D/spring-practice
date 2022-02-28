@@ -4,6 +4,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class JpaMain {
@@ -209,14 +210,146 @@ public class JpaMain {
             */
 
 
+            // 상속관계 매핑
+            // 조인 전략.
+            // 결과를 보면 pk값인 id를 이용해서 각각의 테이블에 정보가 저장되어 있다.
+            // select * from item;
+            //ID  	NAME  	PRICE
+            //1	ccc	10000
+            //select * from movie;
+            //ACTOR  	DIRECTOR  	ID
+            //bbb	aaaa	1
+            /*
+            Movie movie = new Movie();
+            movie.setDirector("aaaa");
+            movie.setActor("bbb");
+            movie.setName("ccc");
+            movie.setPrice(10000);
+
+            em.persist(movie);
+
+            // 1차 캐시 초기화
+            em.flush();
+            em.clear();
+
+            // 조회
+            Movie findMovie = em.find(Movie.class, movie.getId());
+            System.out.println("findMovie = " + findMovie);
+            */
+            /*
+            * Hibernate:
+    select
+        movie0_.id as id1_2_0_,
+        movie0_1_.name as name2_2_0_,
+        movie0_1_.price as price3_2_0_,
+        movie0_.actor as actor1_6_0_,
+        movie0_.director as director2_6_0_
+    from
+        Movie movie0_
+    inner join
+        Item movie0_1_
+            on movie0_.id=movie0_1_.id
+    where
+        movie0_.id=?
+            * 출력 결과를 보면 movie를 가져오기 위해 item을 조인해서 가져온다.
+            * */
 
 
+            /*
+            // Mapped Superclass
+            // baseEntity에 있는 속성을 같이 사용할 수 있게 됨.
+            Member member = new Member();
+            member.setUsername("user1");
+            member.setCreateBy("kim");
+            member.setCreatedDate(LocalDateTime.now());
+
+            em.persist(member);
+
+            em.flush();
+            em.clear();
+            */
+
+            /*
+            // 프록시
+            Member member = new Member();
+            member.setUsername("hello");
+
+            em.persist(member);
+
+            em.flush();
+            em.clear();
+
+            // em.find는 실제 엔티티 객체를 조회하기 때문에 쿼리가 나간다. (join을 통해서 찾아옴)
+            //Member findMember = em.find(Member.class, member.getId());
+
+            // 그러나, em.getReference는 단순히 얘만 호출했을 때는 DB에 쿼리를 보내지 않지만,
+            // 이 값을 실제로 사용하는 시점. -> getUsername() 호출 시점에서는 DB에 쿼리를 보낸다.
+            // (getId의 경우 em.getReference의 인자로 쓰였으니까 그때는 쿼리 x)
+            // 즉, 이 친구는 가짜 프록시 객체가 조회가 되는 것.
+            Member findMember = em.getReference(Member.class, member.getId());
+            // findMember.getClass() = class hellojpa.Member$HibernateProxy$J5I2Ikt2
+            // 출력을 해보면 hibernateProxy 클래스라는 걸 알 수 있다.
+            System.out.println("findMember.getClass() = " + findMember.getClass());
+            System.out.println("findMember.getId() = " + findMember.getId());
+            // 여기서 내부적으로 영속성 컨텍스트에게 요청을 해준 다음, 실제 엔티티 객체가 만들어지게 되는 것.
+            // 그리고 결과적으로 봤을 때 실제 객체의 getName()이 호출되는 것이다.
+            // 그런다고 이 이후에 getClass를 했을 때 실제 객체가 리턴되는 건 아님. 가짜 프록시 객체인 건 그대로임.
+            System.out.println("findMember.getUsername() = " + findMember.getUsername());
+            */
+
+            /*
+            // 즉시 로딩과 지연 로딩
+            Team team = new Team();
+            team.setName("teamA");
+            em.persist(team);
+
+            Member member1 = new Member();
+            member1.setUsername("member1");
+            member1.setTeam(team);
+
+            em.persist(member1);
+            
+            em.flush();
+            em.clear();
+
+            // 지연 로딩의 경우 이 시점에서 쿼리문을 살펴보면 select로 Member만 가져온다.
+            // 즉시 로딩의 경우, 이 시점에서 join을 통해 값들을 전부 읽어온다. (team과 member 모두)
+            Member m = em.find(Member.class, member1.getId());
+
+            // m.getTeam().getClass() = class hellojpa.Team$HibernateProxy$Aa9LeXnp
+            // Team의 경우 프록시 객체를 가져온다.
+            // m.getTeam().getClass() = class hellojpa.Team
+            // 반대로, 즉시 로딩의 경우 진짜 엔티티를 가져온다.
+            System.out.println("m.getTeam().getClass() = " + m.getTeam().getClass());
+
+            // 그리고, 팀의 어떤 속성을 사용하는 시점에서 프록시 객체가 초기화되면서
+            // 값을 가져오게 된다. (여기서 쿼리가 한 번 더 나감)
+            // 즉시 로딩에서는 실제 값을 출력해주는 것. (쿼리 x)
+            m.getTeam().getName();
+            */
 
 
+            /*
+            // 영속성 전이
+            Child child1 = new Child();
+            Child child2 = new Child();
 
+            Parent parent = new Parent();
+            parent.addChild(child1);
+            parent.addChild(child2);
+
+            // 원래였으면 이런 식으로 persist를 3번이나 해야 한다. -> 귀찮음
+            em.persist(parent);
+
+            // 그러나, cascade 옵션을 지정해주면 알아서 등록해줌.
+            // 실행해보면 쿼리가 정상적으로 3번 들어감.
+            //em.persist(child1);
+            //em.persist(child2);
+            */
 
             // 커밋 -> 이때 db에 쿼리가 날라가서 저장되는 것임.
             tx.commit();
+
 
         } catch (Exception e) {
             tx.rollback();

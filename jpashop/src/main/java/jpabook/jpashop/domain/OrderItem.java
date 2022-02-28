@@ -2,8 +2,10 @@ package jpabook.jpashop.domain;
 
 import javax.persistence.*;
 
+import static javax.persistence.FetchType.LAZY;
+
 @Entity
-public class OrderItem {
+public class OrderItem extends BaseEntity{
 
     @Id
     @GeneratedValue
@@ -14,7 +16,7 @@ public class OrderItem {
     //private Long orderId;
 
     // 하나의 주문엔 여러 개의 주문 아이템 가능
-    @ManyToOne
+    @ManyToOne(fetch= LAZY)
     @JoinColumn(name="ORDER_ID")
     private Order order;
 
@@ -22,7 +24,7 @@ public class OrderItem {
     //private Long itemId;
 
     // 하나의 아이템엔 여러 개의 주문 아이템 존재 가능
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name="ITEM_ID")
     private Item item;
 

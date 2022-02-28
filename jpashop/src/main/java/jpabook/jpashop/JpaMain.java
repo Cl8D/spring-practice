@@ -1,5 +1,6 @@
 package jpabook.jpashop;
 
+import jpabook.jpashop.domain.Book;
 import jpabook.jpashop.domain.Order;
 import jpabook.jpashop.domain.OrderItem;
 
@@ -17,9 +18,18 @@ public class JpaMain {
         tx.begin();
 
         try{
+            /*
             // 아무튼 핵심은 양방향보다는 단방향을 잘 설계하자!
             Order order = new Order();
             order.addOrderItem(new OrderItem());
+            */
+
+            // 상속관계 매핑
+
+            Book book = new Book();
+            book.setName("JPA");
+            book.setAuthor("김영한");
+            em.persist(book);
 
 
             tx.commit();

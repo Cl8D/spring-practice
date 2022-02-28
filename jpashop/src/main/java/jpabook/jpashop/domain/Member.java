@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Member {
+public class Member extends BaseEntity {
 
     @Id
     // 어차피 strategy의 default 값이 auto여서 안 써도 됨.

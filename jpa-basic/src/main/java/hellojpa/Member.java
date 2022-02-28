@@ -1,6 +1,7 @@
 package hellojpa;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -9,8 +10,8 @@ import java.util.List;
 @Entity
 // db에 저장된 table 이름이 다를 때는 이런 식으로 설정해주기. 보통 클래스 이름을 따른다.
 //@Table(name = "USER")
+//public class Member extends BaseEntity {
 public class Member {
-
     /*
     // JPA에게 PK를 알려주기 위해서 @Id 사용하기
     @Id
@@ -115,6 +116,19 @@ public class Member {
     @Column(name= "USERNAME")
     private String username;
 
+
+    // 임베디드 타입
+    @Embedded
+    private Period workPeriod;
+
+    @Embedded
+    private Address homeAddress;
+
+    // 같은 타입을 2번 사용하고 싶을 때
+    //@Embedded
+    //@AttributeOverrides(여기에 원래 값을 써야 하는데 귀찮으니 생략)
+    //private Address workAddress;
+
     //@Column(name = "TEAM_ID")
     //private Long teamId;
 
@@ -129,17 +143,24 @@ public class Member {
     */
 
 
+    /*
     // 일대다 양방향 매핑. 읽기 전용 매핑이 생기는 것.
-    @ManyToOne
-    @JoinColumn(name="TEAM_ID", insertable = false, updatable = false)
+    // fetch -> 지연 로딩 LAZY
+    // 이러면 team은 proxy 객체를 조회하고, Member만 db에서 조회하게 된다.
+    //@ManyToOne(fetch = FetchType.LAZY)
+    // 즉시 로딩 사용 -> Member-Team을 함께 조회할 때
+    @ManyToOne(fetch = FetchType.EAGER)
+    //@JoinColumn(name="TEAM_ID", insertable = false, updatable = false)
+    @JoinColumn
     private Team team;
+    */
 
-
+    /*
     // 일대일 주 테이블 외래키 단방향
     @OneToOne
     @JoinColumn(name="LOCKER_ID")
     private Locker locker;
-
+    */
 
     /*
     // 다대다 관계
@@ -149,13 +170,14 @@ public class Member {
     private List<Product> products = new ArrayList<>();
     */
 
+    /*
     // 다대다 -> 일대다, 다대일로 변경
     @OneToMany(mappedBy = "member")
     private List<MemberProduct> memberProducts = new ArrayList<>();
+    */
 
-
-
-  public Long getId() {
+    /*
+    public Long getId() {
         return id;
     }
 
@@ -178,6 +200,7 @@ public class Member {
     public void setTeam(Team team) {
         this.team = team;
     }
+    */
 
     /*
     // 조금 더 중요한 함수임을 알려주기 위해 getter-setter 관례에서 벗어나도록

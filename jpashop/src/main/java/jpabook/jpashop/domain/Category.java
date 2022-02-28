@@ -4,8 +4,10 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static javax.persistence.FetchType.*;
+
 @Entity
-public class Category {
+public class Category extends BaseEntity{
 
     @Id
     @GeneratedValue
@@ -13,10 +15,12 @@ public class Category {
 
     private String name;
 
-    @ManyToOne
+    // ManyToOne의 default fetch는 eager이기 때문에 지연 로딩으로 변경해주기.
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name="PARENT_ID")
     private Category parent;
 
+    // 반대로 이 친구는 기본이 lazy여서 ㄱㅊ
     @OneToMany(mappedBy = "parent")
     private List<Category> child = new ArrayList<>();
 

@@ -5,7 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Item {
+// 단일 테이블 전략 선택. (상속 관계 매핑)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+// dtype으로 각각을 구분
+@DiscriminatorColumn
+public abstract class Item extends BaseEntity {
 
     @Id @GeneratedValue
     @Column(name = "ITEM_ID")
@@ -18,7 +22,6 @@ public class Item {
     // 다대다 양방향
     @ManyToMany(mappedBy = "items")
     private List<Category> categories = new ArrayList<>();
-
 
     public Long getId() {
         return id;
