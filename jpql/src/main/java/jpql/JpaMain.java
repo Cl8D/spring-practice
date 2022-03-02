@@ -1,6 +1,7 @@
 package jpql;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.List;
 
 public class JpaMain {
@@ -80,6 +81,7 @@ public class JpaMain {
             */
 
 
+            /*
             // 조인
             Team team = new Team();
             team.setName("teamA");
@@ -94,6 +96,7 @@ public class JpaMain {
 
             em.flush();
             em.clear();
+            */
 
             /*
             // member-team을 inner join해주기
@@ -131,7 +134,82 @@ public class JpaMain {
                 System.out.println("objects[2] = " + objects[2]);
             }
             */
-            
+
+            // 페치 조인 (fetch join)
+            Team teamA = new Team();
+            teamA.setName("teamA");
+            em.persist(teamA);
+
+            Team teamB = new Team();
+            teamB.setName("teamB");
+            em.persist(teamB);
+
+
+            Member member1 = new Member();
+            member1.setUsername("member1");
+            member1.setTeam(teamA);
+            em.persist(member1);
+
+            Member member2 = new Member();
+            member2.setUsername("member2");
+            member2.setTeam(teamA);
+            em.persist(member2);
+
+            Member member3 = new Member();
+            member3.setUsername("member3");
+            member3.setTeam(teamB);
+            em.persist(member3);
+
+            em.flush();
+            em.clear();
+
+            // before Fetch Join
+            // String query = "select m from Member m";
+
+            // After Fetch Join (Entity)
+            //String query = "select m from Member m join fetch m.team";
+
+            /*
+            List<Member> result = em.createQuery(query, Member.class)
+                    .getResultList();
+
+            // 여기서 member.getTeam().getName()을 할 때마다 db에 쿼리를 날리게 된다.
+            // 조금 더 구체적으로 말하자면,
+            // 회원1, 팀A -> SQL을 날려서 가져옴
+            // 회원2, 팀A -> 회원1 덕분에 팀A는 이미 1차 캐시에 저장되어 있기 때문에 1차 캐시에서 가져옴
+            // 회원3, 팀B -> 얘는 없으니깐 또 쿼리를 날려서 가져옴
+            // 즉, 쿼리가 여러 번 나가게 되니까...
+            // N+1 문제가 발생하게 된다. => 이를 위해 페치 조인 사용하기
+            // fetch join을 활용하면 쿼리가 1번만 나오게 된다. (조인으로 한 번에 가져옴)
+            for (Member member : result) {
+                System.out.println("member = " + member.getUsername() + ", "
+                        + member.getTeam().getName());
+            }
+            */
+
+            // Collection Fetch Join
+            //String query = "select t from Team t join fetch t.members";
+
+            // distinct 활용하기 -> 중복 제거
+            String query = "select distinct t from Team t join fetch t.members";
+
+            List<Team> result = em.createQuery(query, Team.class).getResultList();
+
+            // 출력을 해보면 teamA의 경우가 2번 출력이 되는데,
+            // db 입장에서는 일대다를 하다보면 데이터가 뻥튀기 된다.
+            // (왜냐면, teamA에 회원 2명이 있는 걸 db에 저장하면 각각 한 줄씩 2줄로 저장이 되니깐, jpa는 이를 구분 못하고 그대로 가져옴)
+            // distinct를 활용하면 팀A, 팀B 한 번씩만 나오게 된다.
+            for (Team team : result) {
+                System.out.println("team = " + team.getName() + "|" + team.getMembers().size());
+
+            }
+
+
+
+
+
+            em.flush();
+            em.clear();
 
             tx.commit();
         }catch (Exception e) {
