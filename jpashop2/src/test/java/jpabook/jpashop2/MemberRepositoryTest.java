@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.Assert.*;
 
+/*
 // JUnit에게 spring과 관련된 걸 테스트함을 알려주기
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -45,7 +46,5 @@ public class MemberRepositoryTest {
         // 영속성 컨텍스트가 동일함을 보장한다. (식별자가 같으면 동일한 엔티티로 인식한다. 1차 캐시에서 가져오니까)
         Assertions.assertThat(findMember).isEqualTo(member);
     }
-
-
-
 }
+*/

@@ -1,0 +1,21 @@
+spring:
+  # 테스트용 yml 파일. main보다 우선권을 가진다 (test에서는)
+  # springBoot에서는 in-memory db를 제공하기 때문에,
+  # 기본적으로 아무 설정이 없으면 그냥 알아서 in-memory DB로 돌려준다.
+  # datasource:
+    # url: jdbc:h2:mem:test
+    # username: sa
+    # password:
+    # driver-class-name: org.h2.Driver
+
+  # 그리고 기본적으로, springBoot는 create-drop으로 동작한다
+  # jpa:
+    # hibernate:
+      # ddl-auto: create
+    # properties:
+      # hibernate:
+        # format_sql: true
+
+logging.level:
+  org.hibernate.SQL: debug
+  org.hibernate.type: trace
