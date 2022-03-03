@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter
+@Getter @Setter
 // 싱글 테이블 전략 설정
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 // dtype을 기준으로 구분

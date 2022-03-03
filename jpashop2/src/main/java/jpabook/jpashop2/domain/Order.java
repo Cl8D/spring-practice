@@ -94,7 +94,7 @@ public class Order {
     }
 
     // 비즈니스 로직
-    // 1, 주문 취소
+    // 1. 주문 취소
     public void cancel () {
         // 배송 상태가 이미 완료되었다면
         if(delivery.getStatus() == DeliveryStatus.COMP) {
