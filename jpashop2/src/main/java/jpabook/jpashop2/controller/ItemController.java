@@ -86,6 +86,8 @@ public class ItemController {
     @PostMapping("/items/{itemId}/edit")
     // html 파일에서 object="${form}"에 의해서 이름이 그대로 넘어오기 때문에 이런 식으로 옵션 지정 필요
     public String updateItem (@ModelAttribute("form") BookForm form) {
+        // 가급적이면 이 방법보다
+        /*
         Book book = new Book();
 
         book.setId(form.getId());
@@ -96,7 +98,14 @@ public class ItemController {
         book.setIsbn(form.getIsbn());
 
         itemService.saveItem(book);
+        */
+
+        // 이 방법을 사용하자.
+        // 어설프게 엔티티를 생성하지 않은 것.
+        itemService.updateItem(form.getId(), form.getName(), form.getPrice(), form.getStockQuantity());
+
         return "redirect:/items";
+
 
     }
 
