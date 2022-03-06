@@ -1,0 +1,14 @@
+package hello.servlet.web.frontcontroller.v3.controller;
+
+import hello.servlet.web.frontcontroller.v2.ModelView;
+import hello.servlet.web.frontcontroller.v3.ControllerV3;
+
+import java.util.Map;
+
+public class MemberFormControllerV3 implements ControllerV3 {
+    @Override
+    public ModelView process(Map<String, String> paramMap) {
+        // 물리적 주소가 아닌 논리적 이름을 전달해준다.
+        return new ModelView("new-form");
+    }
+}
