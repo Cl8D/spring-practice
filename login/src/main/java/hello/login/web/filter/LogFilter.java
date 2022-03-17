@@ -20,10 +20,13 @@ public class LogFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         // http 요청이 아니라면 다운 캐스팅으로 형식 맞춰주기.
+        // (사실 그냥 httpServletRequest를 사용해도 될 것 같다)
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
+        // 모든 사용자의 요청 UR를 저장
         String requestURI = httpRequest.getRequestURI();
-        // 구분을 위해 http 요청당 임의의 uuid 생성
+
+        // 요청 구분을 위해 http 요청당 임의의 uuid 생성
         String uuid = UUID.randomUUID().toString();
         try {
             log.info("REQUEST [{}][{}]", uuid, requestURI);
