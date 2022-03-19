@@ -1,9 +1,16 @@
 package hello.exception.servlet;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -41,6 +48,33 @@ public class ErrorPageController {
         log.info("errorPage 500");
         printErrorInfo(request);
         return "error-page/500";
+    }
+
+
+    @RequestMapping(value="/error-page/500",
+            // 클라이언트가 요청하는 http header의 accept 값이 application/json일 때 이 메서드 호출.
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, Object>> errorPage500Api (HttpServletRequest request, HttpServletResponse response) {
+        log.info("API errorPage 500");
+
+        // jackson 라이브러리가 Map을 json으로 바꿀 수 있기 때문에 map 사용
+        Map<String, Object> result = new HashMap<>();
+
+        Exception ex = (Exception) request.getAttribute(ERROR_EXCEPTION);
+        result.put("status", request.getAttribute(ERROR_STATUS_CODE));
+        result.put("message", ex.getMessage());
+
+        Integer statusCode = (Integer) request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
+
+        // responseEntity를 통해 json으로 반환 (메시지 컨버터 동작)
+        return new ResponseEntity<>(result, HttpStatus.valueOf(statusCode));
+
+        /**
+         * {
+         *     "message": "잘못된 사용자",
+         *     "status": 500
+         * }
+         */
     }
 
     private void printErrorInfo(HttpServletRequest request) {
