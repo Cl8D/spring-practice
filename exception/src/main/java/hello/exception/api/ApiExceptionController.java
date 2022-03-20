@@ -5,9 +5,12 @@ import hello.exception.exception.UserException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 @Slf4j
 @RestController
@@ -55,6 +58,55 @@ public class ApiExceptionController {
          *     "message": "잘못된 요청 오류",
          *     "path": "/api/response-status-ex1"
          * }
+         */
+
+
+        // messages.properties 적용한 경우 (error.bad)
+        /**
+         * {
+         *     "timestamp": "2022-03-20T02:49:44.799+00:00",
+         *     "status": 400,
+         *     "error": "Bad Request",
+         *     "exception": "hello.exception.exception.BadRequestException",
+         *     "message": "잘못된 요청 오류입니다. 메시지 사용",
+         *     "path": "/api/response-status-ex1"
+         * }
+         */
+    }
+
+    @GetMapping("/api/response-status-ex2")
+    public String responseStatusEx2() {
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "error.bad",
+                new IllegalArgumentException());
+
+        /**
+         * {
+         *     "timestamp": "2022-03-20T02:54:11.419+00:00",
+         *     "status": 404,
+         *     "error": "Not Found",
+         *     "exception": "org.springframework.web.server.ResponseStatusException",
+         *     "message": "잘못된 요청 오류입니다. 메시지 사용",
+         *     "path": "/api/response-status-ex2"
+         * }
+         *
+         */
+    }
+
+    @GetMapping("/api/default-handler-ex")
+    public String defaultException(@RequestParam Integer data) {
+        return "ok";
+
+        // data에 integer가 아닌 string 값이 들어가면 오류 발생.
+        // 상태코드가 400인 것을 확인할 수 있다.
+        /**
+         * {
+         *     "timestamp": "2022-03-20T03:20:10.909+00:00",
+         *     "status": 400,
+         *     "error": "Bad Request",
+         *     "exception": "org.springframework.web.method.annotation.MethodArgumentTypeMismatchException",
+         *     "path": "/api/default-handler-ex"
+         * }
+         *
          */
     }
 
