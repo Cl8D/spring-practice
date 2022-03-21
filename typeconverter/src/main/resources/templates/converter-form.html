@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form th:object="${form}" th:method="post">
+    <!-- th:field는 자동으로 컨버전 서비스가 적용된다. -->
+    <!-- 즉, ${{ipPort}}와 동일하게 동작하며, ipPort -> String 형으로 변환된다. -->
+    th:field <input type="text" th:field="*{ipPort}"><br/>
+    <!-- 그러나, th:value에는 적용되지 않아서 객체형으로 나온 걸 볼 수 있다. -->
+    th:value <input type="text" th:value="*{ipPort}">(보여주기 용도)<br/>
+    <input type="submit"/>
+</form>
+</body>
+</html>

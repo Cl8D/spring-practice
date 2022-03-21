@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<ul>
+    <!-- 뷰 템플릿은 기본적으로 데이터를 문자로 출력함!! -->
+    <!-- 타임리프에서 ${{...}}을 사용하면 자동으로 컨버전 서비스를 사용하여 변환된 결과 출력해줌 -->
+    <!-- ${...}는 변수 표현식을, ${{...}}는 컨버전 서비스를 의미한다. -->
+
+    <!-- number 값=10000을 문자로 출력(타임리프 디폴트. 숫자->문자) -->
+    <li>${number}: <span th:text="${number}" ></span></li>
+    <!-- IntegerToStringConverter를 통해서 number값인 10000을 문자로 출력 -->
+    <li>${{number}}: <span th:text="${{number}}" ></span></li>
+    <!-- ipPort를 출력. 객체가 출력된다. -->
+    <li>${ipPort}: <span th:text="${ipPort}" ></span></li>
+    <!-- ipPort 값을 문자형으로 출력 -->
+    <li>${{ipPort}}: <span th:text="${{ipPort}}" ></span></li>
+</ul>
+</body>
+</html>
