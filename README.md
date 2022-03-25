@@ -21,5 +21,5 @@
 |:---:|:---:|:---:|:---:|
 |jpa-basic, jpashop, jpql|0223~0302|자바 ORM 표준 JPA 프로그래밍 - 기본편|[🎬](https://inf.run/h49k)|
 |jpashop2|0302~0304|실전! 스프링 부트와 JPA 활용1 - 웹 애플리케이션 개발|[🎬](https://inf.run/iz9N)|
-- 0322~0325 : Spring Security, JWT 공부 [📁](https://github.com/Cl8D/SpringSecurity)
+- 0322~0325 : Spring Security, JWT 공부 - 실습코드: [📁](https://github.com/Cl8D/SpringSecurity)
 ***
