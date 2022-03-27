@@ -1,5 +1,6 @@
 package jpabook.jpashop3.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,6 +22,7 @@ public class Order {
     // ~one으로 끝나면 fetchType 웬만하면 lazy로!
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="member_id")
+    //@JsonIgnore
     private Member member;
 
     // order(1) - orderItem(n)
@@ -28,6 +30,7 @@ public class Order {
     private List<OrderItem> orderItems = new ArrayList<>();
 
     // order(1) - deliver(1)
+    //@JsonIgnore
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name="delivery_id")
     private Delivery delivery;

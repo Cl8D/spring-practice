@@ -64,4 +64,17 @@ public class OrderRepository {
         }
         return query.getResultList();
     }
+
+    // fetch join 활용한 코드
+    public List<Order> findAllWithMemberDelivery() {
+        // order를 가져올 때 member, delivery까지 한 번에 가져오기
+        // 1번의 select절로 한 번에 가져오는 것.
+        // 이때 proxy 객체를 가져오는 것이 아니라,
+        // 그냥 join을 통해서 실제 db에 있는 애들을 한 번에 가져온다구 생각하자
+        String query = "select o from Order o"
+                + " join fetch o.member m"
+                + " join fetch o.delivery d";
+
+        return em.createQuery(query, Order.class).getResultList();
+    }
 }
