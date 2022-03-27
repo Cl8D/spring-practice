@@ -9,6 +9,8 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+// 엔티티에 적용할 때는 이런 식으로
+// @BatchSize(size=1000)
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Getter @Setter

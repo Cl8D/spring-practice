@@ -25,6 +25,9 @@ public class Order {
     //@JsonIgnore
     private Member member;
 
+
+    // 컬렉션에 적용할 때는 이런 식으로 적용 가능
+    // @BatchSize(size=1000)
     // order(1) - orderItem(n)
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();

@@ -77,4 +77,46 @@ public class OrderRepository {
 
         return em.createQuery(query, Order.class).getResultList();
     }
+
+    // fetch join 활용한 코드 - Item 조회
+    public List<Order> findAllWithItem() {
+        // distinct를 사용한 이유.
+        // order가 2개, orderItem이 4개가 db에 존재하는데,
+        // 이를 join하게 되면 결과적으로 컬럼이 4개가 되어버린다.
+        // 즉, 같은 orderId에 대해서 orderItem에 맞추다 보니까 데이터가 뻥튀기 될 수 있다는 것!!
+
+        // JPA 입장에서는 order를 조회해보면 동일한 PK값일 때 주소값까지 동일하게 나오는데,
+        // distinct를 사용하게 되면 같은 엔티티 조회 시 중복을 걸러주게 된다. (같은 id면 제거해주는 형식인 것 같음,)
+        // 이때 db 쿼리에도 distinct로 붙여서 날려주지만, 사실 db에서는 distinct를 사용해서 중복을 제거하려면
+        // 둘이 완전히 동일해야 해서... db 자체에서는 join 하면 4개가 그대로 나오기는 함.
+
+        // 그러나, 이 경우에는 페이징이 불가능하다는 단점이 있다. (setFirstREsult, setMaxResults)
+        // 이러면 하이버네이트는 db에서 모든 데이터를 읽어서 메모리 단에서 페이징을 해버림...
+        // 메모리 내에서 수많은 데이터를 올려서 페이징을 해버리면... 큰일난다.
+        String query = "select distinct o from Order o"
+                        + " join fetch o.member m"
+                        + " join fetch o.delivery d"
+                        + " join fetch o.orderItems oi"
+                        + " join fetch oi.item i";
+
+        return em.createQuery(query, Order.class).getResultList();
+    }
+
+    // cf) fetch join 관련 너무 좋은 QnA! 나중에 다시 보면서 정리하기 - https://www.inflearn.com/questions/15876
+
+
+    // xToOne 관계를 fetch join 시켜주기 + 페이징 처리
+    public List<Order> findAllWithMemberDelivery (int offset, int limit) {
+
+        // order(n) - member(1)
+        // order(n) - delivery(1)
+        String query = "select o from Order o"
+                        + " join fetch o.member m"
+                        + " join fetch o.delivery d";
+
+        return em.createQuery(query, Order.class)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList();
+    }
 }
