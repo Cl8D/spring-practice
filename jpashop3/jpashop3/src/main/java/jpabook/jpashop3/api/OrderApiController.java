@@ -10,6 +10,10 @@ import jpabook.jpashop3.domain.OrderItem;
 import jpabook.jpashop3.domain.OrderStatus;
 import jpabook.jpashop3.repository.OrderRepository;
 import jpabook.jpashop3.repository.OrderSearch;
+import jpabook.jpashop3.repository.order.query.OrderFlatDto;
+import jpabook.jpashop3.repository.order.query.OrderItemQueryDto;
+import jpabook.jpashop3.repository.order.query.OrderQueryDto;
+import jpabook.jpashop3.repository.order.query.OrderQueryRepository;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.*;
 
 /**
  * 컬렉션 1:n (OneToMany) 조회 및 최적화하기
@@ -232,7 +237,7 @@ public class OrderApiController {
         <hibernate Batch size 옵션 줬을 경우>
         1) 처음에 order-member-delivery select 쿼리 1번
         2) orderItem 쿼리 1번
-        -> 이때 쿼리르 보면 무슨 in 쿼리가 들어가있다.
+        -> 이때 쿼리를 보면 무슨 in 쿼리가 들어가있다.
         : 한 번에 db에 있는 userA, userB의 orderItem을 다 가져와버림.
         => orders와 관련된 orderItem을 그냥 다 가져와버리는?
         (우리는 fetch_size를 100으로 줬으니까 100개를 미리 긁어오는 느낌)
@@ -249,6 +254,83 @@ public class OrderApiController {
         애플리케이션이 감당할 수 있을 정도로 설정해주면 됨.
      */
 
+    /***************************/
 
+    // v4 - JPA에서 DTO 직접 조회하기
+    private final OrderQueryRepository orderQueryRepository;
+
+
+    @GetMapping("/api/v4/orders")
+    public OqdResult<OrderQueryDto> ordersV4() {
+        List<OrderQueryDto> orderQueryDtos = orderQueryRepository.findOrderQueryDtos();
+        return new OqdResult<>(orderQueryDtos.size(), orderQueryDtos);
+    }
+
+    /*
+        쿼리를 보면, 처음에 order-delivery-member를 조인하여 query 1번 (findOrders)
+        그리고 orderItem + item에 대한 쿼리 한 번 (findOrderItems)
+        - 이때 orderItem(n) - item(1)여서 item이랑 orderItem을 join 해줌. -> 최적화
+
+        그리고 두 번째 유저에 대한 orderItem + item 쿼리 한 번이 나가서
+        총 3번의 쿼리가 나가게 된다.
+
+        xToOne에 해당하는 관계들을 먼저 조회한 다음에,
+        xToMany 관계는 별도로 처리해준다. (row 증가 방지)
+     */
+
+    @Data
+    @AllArgsConstructor
+    static class OqdResult<T> {
+        private int count;
+        private List<T> orderQueryDto;
+    }
+
+    /***************************/
+
+    // v5 - JPA에서 DTO 직접 조회 + 컬렉션 조회 최적화
+    @GetMapping("/api/v5/orders")
+    public OqdResult<OrderQueryDto> ordersV5() {
+        List<OrderQueryDto> orderQueryDtos = orderQueryRepository.findAllByDto_optimization();
+        return new OqdResult<>(orderQueryDtos.size(), orderQueryDtos);
+    }
+
+    /*
+        이렇게 해주면 쿼리는
+        1) order-member-delivery에 대한 쿼리 1번 (findOrders)
+        -> 여기서 orderId를 얻을 수 있으니깐 이를 기준으로 XToMany 관계인 orderItem 한꺼번에 조회하기
+        2) 컬렉션에 대한 쿼리가 1번 나간다. (orderItem + item -> in으로 한 번에 조회)
+     */
+
+
+    /***************************/
+
+    // v6 - JPA에서 DTO 직접 조회 + 플랫 데이터 최적화
+    @GetMapping("/api/v6/orders")
+    public OqdResult<OrderQueryDto> ordersV6() {
+        List<OrderFlatDto> flats = orderQueryRepository.findAllByDto_flat();
+
+        // orderFlatDto -> orderQueryDto를 반환할 수 있도록 하기
+        List<OrderQueryDto> orderQueryDtos = flats.stream()
+                .collect(
+                        // 아이디어는 orderQueryDto / orderItemQueryDto를 분리해내는 것
+                        groupingBy(o -> new OrderQueryDto(
+                                        o.getOrderId(), o.getName(), o.getOrderDate(), o.getOrderStatus(), o.getAddress()),
+                                mapping(o -> new OrderItemQueryDto(
+                                        o.getOrderId(), o.getItemName(), o.getOrderPrice(), o.getCount()), toList())
+                        )
+                ).entrySet().stream()
+                .map(e -> new OrderQueryDto(
+                        e.getKey().getOrderId(), e.getKey().getName(), e.getKey().getOrderDate(),
+                        e.getKey().getOrderStatus(), e.getKey().getAddress(), e.getValue()))
+                .collect(toList());
+
+        return new OqdResult<>(orderQueryDtos.size(), orderQueryDtos);
+    }
+
+    /*
+        페이징은 못하지만 쿼리가 딱 1번만 나간다는 장점이 있다.
+        (전부 다 조인하는 느낌)
+        단, 애플리케이션에서 추가 작업이 커서 힘들다.
+     */
 
 }
