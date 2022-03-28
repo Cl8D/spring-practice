@@ -12,7 +12,9 @@ import javax.persistence.QueryHint;
 import java.util.List;
 
 // <Entity-Type, PK> 형식
-public interface MemberRepository extends JpaRepository<Member, Long> {
+// 우리가 만든 memberRepositoryCustom도 상속해준다.
+// 이러면 실제 사용할 때 memberRepository.findMemberCustom()처럼 사용 가능!
+public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom {
     /*
         이런 식으로 인터페이스만 있어도, springJPA가 알아서 구현 클래스를 만들어준다.
         (프록시 객체로 만들어버림)
@@ -150,7 +152,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     // Lock
     // select를 하면 끝부분에 for update를 붙여준다.
-
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     List<Member> findLockByUsername(String username);
 

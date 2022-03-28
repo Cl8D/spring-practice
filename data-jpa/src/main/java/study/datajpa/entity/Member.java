@@ -15,8 +15,8 @@ import javax.persistence.*;
 // 이런식으로 엔티티에 entityGraph 적용도 가능
 //@NamedEntityGraph(name = "Member.all", attributeNodes = @NamedAttributeNode("team"))
 // 이거 사용할 때는 메서드에서 이제 @EntityGraph("Member.all") 선언해줘서 쓰면 된다!
-public class Member {
-
+//public class Member extends JpaBaseEntity{
+public class Member extends BaseEntity{
     @Id @GeneratedValue
     @Column(name="member_id")
     private Long id;
