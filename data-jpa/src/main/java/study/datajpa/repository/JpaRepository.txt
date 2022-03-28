@@ -1,0 +1,47 @@
+<스프링 데이터 - 공통 부분>
+Repository <- CrudRepository <- PagaingAndSortingRepository || <-JpaRepository
+
+1) Repository
+
+
+2) CrudRepository
+save(S) : S
+-> 새로운 엔티티 저장 및 이미 있는 엔티티 병합
+
+findById(ID) : Optional<T>
+-> 엔티티 하나 조회. EntityManager.find() 호출
+
+exists(ID) : boolean
+
+count() : long
+
+delete(T)
+-> 엔티티 하나 삭제. EntityManager.remove()
+...
+
+
+3) PagaingAndSortingRepository
+findAll(Sort) : Iterable<T>
+findAll(Pageable) : Page<T>
+
+--
+
+<스프링 데이터 JPA - JPA에 특화됨>
+1) JpaRepository
+findAll() : List<T>
+-> 모든 엔티티 조회. 정렬이나 페이징 조건을 줄 수 있음!
+findAll(Sort) : List<T>
+findAll(Iterable<ID>) : List<T>
+
+save(Iterable<ID>) : List<S>
+flush()
+saveAndFlush(T) : T
+deleteInBatch(Iterable<T>)
+deleteAllInBatch()
+getOne(ID) : T
+-> 엔티티를 프록시로 조회. EntityManager.getReference()
+
+
+--
+
+T : entity, Id: entity의 pk, S : entity와 자식 타입
