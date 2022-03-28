@@ -12,6 +12,9 @@ import javax.persistence.*;
 // 가급적이면 연관관계가 없는 내부 필드만 사용해주기
 // 여기서 team까지는 X!! 그러면 team에서도 member 찍으려고 하면서 무한루프 걸림
 @ToString(of = {"id", "username", "age"})
+// 이런식으로 엔티티에 entityGraph 적용도 가능
+//@NamedEntityGraph(name = "Member.all", attributeNodes = @NamedAttributeNode("team"))
+// 이거 사용할 때는 메서드에서 이제 @EntityGraph("Member.all") 선언해줘서 쓰면 된다!
 public class Member {
 
     @Id @GeneratedValue

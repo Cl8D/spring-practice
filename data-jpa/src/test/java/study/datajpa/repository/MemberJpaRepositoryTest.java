@@ -40,6 +40,8 @@ class MemberJpaRepositoryTest {
 
     }
 
+    /*******************************/
+
     @Test
     public void basicCRUD() throws Exception {
         // given
@@ -75,6 +77,8 @@ class MemberJpaRepositoryTest {
         assertThat(deletedCount).isEqualTo(0);
     }
 
+    /*******************************/
+
     @Test
     public void findByUsernameAndAgeGreaterThan() throws Exception {
         // given
@@ -90,6 +94,58 @@ class MemberJpaRepositoryTest {
         assertThat(result.get(0).getUsername()).isEqualTo("AAA");
         assertThat(result.get(0).getAge()).isEqualTo(20);
         assertThat(result.size()).isEqualTo(1);
+
+    }
+
+    /*******************************/
+
+    @Test
+    public void paging() throws Exception {
+        // given
+        memberJpaRepository.save(new Member("member1", 10));
+        memberJpaRepository.save(new Member("member2", 10));
+        memberJpaRepository.save(new Member("member3", 10));
+        memberJpaRepository.save(new Member("member4", 10));
+        memberJpaRepository.save(new Member("member5", 10));
+
+        int age = 10;
+        int offset = 0;
+        int limit = 3;
+
+        // when
+        // age가 10살인 애를 처음 데이터부터 3개 출력.
+        List<Member> members = memberJpaRepository.findByPage(age, offset, limit);
+        // age=10인 사람이 몇 명인지
+        long totalCount = memberJpaRepository.totalCount(age);
+
+        // 페이지 계산 시
+        // totalPage = totalCount / size...
+
+        // then
+        assertThat(members.size()).isEqualTo(3);
+        assertThat(totalCount).isEqualTo(5);
+
+        // 쿼리 확인) select member0_.member_id as member_i1_0_, member0_.age as age2_0_, member0_.team_id as team_id4_0_, member0_.username as username3_0_ from member member0_ where member0_.age=10 order by member0_.username desc limit 3;
+
+    }
+
+    /*******************************/
+
+    @Test
+    public void bulkUpdate() throws Exception {
+        // given
+        memberJpaRepository.save(new Member("member1", 10));
+        memberJpaRepository.save(new Member("member2", 19));
+        memberJpaRepository.save(new Member("member3", 20));
+        memberJpaRepository.save(new Member("member4", 21));
+        memberJpaRepository.save(new Member("member5", 40));
+
+        // when
+        // 20살 이상이면 1살씩 증가시켜주기
+        int resultCount = memberJpaRepository.bulkAgePlus(20);
+
+        // then
+        assertThat(resultCount).isEqualTo(3);
 
     }
 

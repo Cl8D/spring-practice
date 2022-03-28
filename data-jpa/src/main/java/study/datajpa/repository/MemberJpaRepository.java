@@ -64,6 +64,8 @@ public class MemberJpaRepository {
         return em.find(Member.class, id);
     }
 
+    /*******************************/
+
     // 이름과 나이 기준으로 회원 조회하기
     public List<Member> findByUsernameAndAgeGreaterThan(String username, int age) {
         String query = "select m from Member m where m.username =:username and m.age > :age";
@@ -71,6 +73,41 @@ public class MemberJpaRepository {
                 .setParameter("username", username)
                 .setParameter("age", age)
                 .getResultList();
+    }
+
+    /*******************************/
+
+    // 페이징
+    // 검색 조건 : 나이 10살, 이름으로 내림차순, 첫 번째 페이지, 페이지당 데이터 3건씩 보여지도록
+    public List<Member> findByPage(int age, int offset, int limit) {
+        String query = "select m from Member m where m.age = :age order by m.username desc";
+        return em.createQuery(query)
+                .setParameter("age", age)
+                // 어디서부터 가져올 것인지
+                .setFirstResult(offset)
+                // 몇 개를 가져올 것인지
+                .setMaxResults(limit)
+                .getResultList();
+    }
+
+    public long totalCount(int age) {
+        String query = "select count(m) from Member m where m.age = :age";
+        return em.createQuery(query, Long.class)
+                .setParameter("age", age)
+                .getSingleResult();
+    }
+
+    /*******************************/
+
+    // 벌크성 수정 쿼리
+    public int bulkAgePlus(int age) {
+        String query = "update Member m set m.age = m.age + 1"
+                + " where m.age >= :age";
+
+        return em.createQuery(query)
+                .setParameter("age", age)
+                // 응답한 값의 개수가 나온다!
+                .executeUpdate();
     }
 
 }
