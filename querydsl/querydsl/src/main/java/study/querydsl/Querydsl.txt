@@ -1,0 +1,11 @@
+===== 기본 Q-Type 활용하기 ======
+
+Q클래스 인스턴스를 사용하는 2가지 방법.
+1) 별칭 직접 지정하기
+QMember qMember = new QMember("m");
+
+2) 기본 인스턴스 사용하기
+QMember qMember = QMember.member;
+
+
+============
