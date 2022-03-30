@@ -185,7 +185,9 @@ public class QuerydslBasicTest {
         member.age.notIn(10, 20) // age not in (10, 20)
         member.age.between(10,30) //between 10, 30
 
+        // greater or equal?
         member.age.goe(30) // age >= 30
+        // greater than
         member.age.gt(30) // age > 30
         member.age.loe(30) // age <= 30
         member.age.lt(30) // age < 30
