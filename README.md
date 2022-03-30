@@ -13,6 +13,7 @@
 |thymeleaf-basic, form, message, validation, login, exception, typeconverter|0309~0321|스프링 MVC 2편 - 백엔드 웹 개발 활용 기술|[🎬](https://inf.run/7sz4)|
 
 - "모든 개발자를 위한 HTTP 웹 기본 지식"은 실습 코드 X, 수강 완료 (0220~0222)
+- 스프링 핵심원리 고급편은 천천히 시작할 예정!
 ***
 
 ***
@@ -23,6 +24,7 @@
 |jpashop2|0302~0304|실전! 스프링 부트와 JPA 활용1 - 웹 애플리케이션 개발|[🎬](https://inf.run/iz9N)|
 |jpashop3|0326~0327|실전! 스프링 부트와 JPA 활용2 - API 개발과 성능 최적화|[🎬](https://inf.run/EJtA)|
 |data-jpa|0328|실전! 스프링 데이터 JPA|[🎬](https://inf.run/we4h)|
+|querydsl|03329~0330|실전! Querydsl|[🎬](https://inf.run/wSQg)|
 - 0322~0325 : Spring Security, JWT 공부 - 실습코드: [📁](https://github.com/Cl8D/SpringSecurity)
-- 0329 : QueryDSL 공부 중 😊
+- 0331~ing : 프로젝트 준비 중...😚
 ***
