@@ -17,6 +17,12 @@ public class MemberServiceV2 {
     private final DataSource dataSource;
     private final MemberRepositoryV2 memberRepositoryV2;
 
+    /*
+        트랜잭션은 비즈니스 로직이 있는 서비스 계층에서 시작하는 것이 좋지만,
+        트랜잭션을 사용하기 위해서 DataSource / Connection / SQLException 같은 JDBC 기술에 의존을 해야 한다.
+        -> 이러면 나중에 JDBC에서 JPA로 변경하면은 서비스 코드까지 변경해야 한다...
+
+     */
     public void accountTransfer(String fromId, String toId, int money) throws SQLException {
 
         Connection conn = dataSource.getConnection();
@@ -73,3 +79,14 @@ public class MemberServiceV2 {
         }
     }
 }
+/*
+    - 결과적으로 서비스 계층은 최대한 순수해야 하기 때문에 데이터 접근 계층에 JDBC를 몰아두자.
+    또한, 이를 인터페이스로 제공하는 것이 가장 좋다!
+
+    - 트랜잭션용 기능과 트랜잭션을 유지하지 않아도 되는 기능으로 분리해야 한다. (커넥션을 파라미터로 넘기면서 트랜잭션을 유지하는 점을 수정)
+    - 트랜잭션 적용 코드 최적화
+    - 데이터 접근 계층의 JDBC 예외가 (SQLException)이 서비스 계층까지 전파되고 있다.
+    --> 이는 JDBC 관련 기술이라 나중에 JPA 같은 걸로 바꾸면 뜯어 고쳐야 하게 됨.
+
+    ==> 스프링을 통해서 이러한 문제들을 해결해보자!
+ */

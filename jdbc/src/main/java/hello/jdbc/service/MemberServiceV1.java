@@ -12,6 +12,11 @@ import java.sql.SQLException;
 public class MemberServiceV1 {
     private final MemberRepositoryV1 memberRepositoryV1;
 
+    /*
+        service1은 순수한 비즈니스 로직만 존재하지만,
+        SQLException이라는 JDBC 기술에 의존한다는 점이 있다.
+        -> memberRepository에서 해결을 해야 한다.
+     */
     public void accountTransfer(String fromId, String toId, int money) throws SQLException {
         Member fromMember = memberRepositoryV1.findById(fromId);
         Member toMember = memberRepositoryV1.findById(toId);
