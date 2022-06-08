@@ -5,21 +5,47 @@ import hello.itemservice.repository.ItemSearchCond;
 import hello.itemservice.repository.ItemUpdateDto;
 import hello.itemservice.repository.memory.MemoryItemRepository;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/*
+    테스트의 원칙.
+    1) 다른 테스트와 격리해야 한다
+    2) 반복해서 실행할 수 있어야 한다.
+
+ */
+// @SpringBootApplication을 찾아서 설정으로 사용함!
 @SpringBootTest
+@Transactional
 class ItemRepositoryTest {
 
     // 참고로, 테스트 시 구현체가 아니라 itemRepository 인터페이스를 테스트하는 걸 볼 수 있는데
     // 이러면 나중에 다른 구현체로 변경되었을 때 구현체가 잘 동작하는지 확인할 수 있다!
     @Autowired
     ItemRepository itemRepository;
+
+//    // 트랜잭션 관련 코드
+//    @Autowired
+//    PlatformTransactionManager transactionManager; // 트랜잭션 관리자는 얘를 주입받아서 사용함. (스프링 부트의 경우 자동으로 적절한 트랜잭션 매니저를 스프링 빈으로 등록해준다!)
+//    TransactionStatus status;
+//
+//    // 각각의 테스트 케이스를 실행하기 전에 호출된다.
+//    @BeforeEach
+//    void beforeEach() {
+//        // 트랜잭션 시작 -> 각 테스트를 트랜잭션 범위 안에서 실행 가능!
+//        status = transactionManager.getTransaction(new DefaultTransactionDefinition());
+//    }
+    // 스프링은 이 과정을 @Transactional으로 해결해준다!
 
     // 테스트가 서로 영향을 주지 않게 하기 위해서 테스트가 끝나면 실행
     @AfterEach
@@ -28,6 +54,9 @@ class ItemRepositoryTest {
         if (itemRepository instanceof MemoryItemRepository) {
             ((MemoryItemRepository) itemRepository).clearStore();
         }
+
+//        // 트랜잭션 롤백
+//        transactionManager.rollback(status);
     }
 
     // 상품 하나 저장하고 잘 저장되었는지 테스트

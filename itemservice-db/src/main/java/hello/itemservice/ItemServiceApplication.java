@@ -2,11 +2,15 @@ package hello.itemservice;
 
 import hello.itemservice.config.*;
 import hello.itemservice.repository.ItemRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+
+import javax.sql.DataSource;
 
 
 // 설정 파일!
@@ -17,6 +21,7 @@ import org.springframework.context.annotation.Profile;
 // 컨트롤러만 컴포넌트 스캔을 사용해주기. (나머지는 수동 등록했음!)
 // 컴포넌트 스캔의 경로를 hello.itemservice.web의 하위로 지정하였음
 @SpringBootApplication(scanBasePackages = "hello.itemservice.web")
+@Slf4j
 public class ItemServiceApplication {
 
 	public static void main(String[] args) {
@@ -39,5 +44,27 @@ public class ItemServiceApplication {
 	public TestDataInit testDataInit(ItemRepository itemRepository) {
 		return new TestDataInit(itemRepository);
 	}
+
+
+	// h2의 임베디드 모드 - h2는 자바로 개발되어 있기 때문에 JVM 내에서 메모리 모드로 동작이 가능하다.
+	// test일 때는 dataSource를 직접 등록해서 사용하겠다는 것
+//	@Bean
+//	@Profile("test")
+//	public DataSource dataSource() {
+//		log.info("메모리 데이터베이스 초기화");
+//		DriverManagerDataSource dataSource = new DriverManagerDataSource();
+//		dataSource.setDriverClassName("org.h2.Driver");
+//		// 여기서 mem:db로 해줘야 임베디드 모드로 동작하는 h2를 사용할 수 있다.
+//		// close_delay는 db 커넥션 연결이 모두 끊어지면 db도 종료되는데, 이를 방지하는 설정
+//		dataSource.setUrl("jdbc:h2:mem:db;DB_CLOSE_DELAY=-1");
+//		dataSource.setUsername("sa");
+//		dataSource.setPassword("");
+//		return dataSource;
+//		// 그러나, 메모리 db는 애플리케이션 종료 시 함께 사라지기 때문에
+//		// 애플리케이션 실행 시점에 데이터베이스 테이블도 새로 만들어줘야 한다!
+//		// 이를 위해 SQL 스크립트를 작성해보자. (스프링부트가 이 스크립트를 실행해서 db를 초기화해줌!)
+//	}
+
+	// 근데 사실, 스프링 부트는 db에 대한 설정이 없으면 알아서 임베디드 데이터베이스를 사용한다!
 
 }
