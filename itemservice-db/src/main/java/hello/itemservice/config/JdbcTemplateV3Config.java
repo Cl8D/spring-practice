@@ -1,16 +1,21 @@
 package hello.itemservice.config;
 
 import hello.itemservice.repository.ItemRepository;
-import hello.itemservice.repository.memory.MemoryItemRepository;
+import hello.itemservice.repository.jdbctemplate.JdbcTemplateRepositoryV2;
+import hello.itemservice.repository.jdbctemplate.JdbcTemplateRepositoryV3;
 import hello.itemservice.service.ItemService;
 import hello.itemservice.service.ItemServiceV1;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
-public class MemoryConfig {
+import javax.sql.DataSource;
 
-    // 스프링 빈으로 등록하고 생성자를 통해 의존관계를 주입해주기
+@Configuration
+@RequiredArgsConstructor
+public class JdbcTemplateV3Config {
+    private final DataSource dataSource;
+
     @Bean
     public ItemService itemService() {
         return new ItemServiceV1(itemRepository());
@@ -18,7 +23,7 @@ public class MemoryConfig {
 
     @Bean
     public ItemRepository itemRepository() {
-        return new MemoryItemRepository();
+        // itemRepository의 구현체로 JdbcTemplateItemRepositoryV3 사용하기
+        return new JdbcTemplateRepositoryV3(dataSource);
     }
-
 }

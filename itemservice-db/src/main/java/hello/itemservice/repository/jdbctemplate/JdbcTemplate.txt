@@ -1,0 +1,58 @@
+* 이름 지정 파라미터
+- 파라미터를 전달하려면 key-value 데이터 구조를 만들어서 전달해야 한다.
+Map / MapSqlParameterSource / BeanProperySqlParameterSource
+
+1. 단순 Map 사용
+Map<String, Object> param = Map.of("id", id);
+Item item = template.queryForObject(sql, param, itemRowMapper());
+
+2. MapSqlParameterSource
+- SQL 타입 지정 등 조금 더 특화되어 있다.
+SqlParameterSource param = new MapSqlParameterSource()
+ .addValue("itemName", updateParam.getItemName())
+ .addValue("price", updateParam.getPrice())
+ .addValue("quantity", updateParam.getQuantity())
+ .addValue("id", itemId); //이 부분이 별도로 필요하다.
+template.update(sql, param);
+
+3. BeanPropertySqlParameterSource
+- 자바 빈의 프로퍼티 규약에 따라 자동으로 파라미터 객체를 생성한다.
+getXxx () -> xxx
+
+SqlParameterSource param = new BeanPropertySqlParameterSource(item);
+KeyHolder keyHolder = new GeneratedKeyHolder();
+template.update(sql, param, keyHolder);
+
+ex) getItemName()
+key=itemName, value=상품명 값 (getItemName()의 값)
+
+-> 단, 이 경우 파라미터로 넘어온 애에 모든 필드가 존재해야 한다.
+
+-----
+
+BeanPropertyRowMapper
+-> ResultSet의 결과를 받아서 자바 빈 규약에 따라 데이터를 변환한다.
+만약, select를 통해서 id, price를 받아오면, 다음과 같은 코드를 작성해준다.
+
+Item item = new Item();
+item.setId(rs.getLong("id"));
+item.setPrice(rs.getInt("price"));
+
+그러나, 별칭의 경우 어떻게 처리해야 할까? -> ex) select item_name
+이때는 조회 SQL을 select item_name as itemName 식으로 변경해준다.
+
+보통 자바는 카멜 표기법을, RDB의 경우 언더스코어를 많이 사용하기 때문에,
+BeanPropertyRowMapper는 언더스코어 -> 카멜로 자동 변환을 해준다.
+
+그래서 완전 이름이 다를 경우에만 별칭을 사용해주면 된다!
+
+==============
+
+* JDBCTemplate 기능
+1) JdbcTemplate : 순서 기반 파라미터 바인딩
+2) NamedParameterJdbcTemplate : 이름 기반 파라미터 바인딩
+3) SimpleJdbcInsert : Insert SQL이 편리해진다
+4) SimpleJdbcCall : 스토어드 프로시저를 편리하게 호출 가능
+
+==> JPA 같은 거 사용할 때 SQL 작성하면 함께 사용해줘도 된다!
+단, 동적 쿼리를 해결할 수 없어서 힘들다...

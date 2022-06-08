@@ -14,6 +14,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ItemServiceV1 implements ItemService {
 
+    // 서비스의 기능들은 단순히 리포지토리에 위임
     private final ItemRepository itemRepository;
 
     @Override
