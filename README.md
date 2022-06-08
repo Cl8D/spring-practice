@@ -11,7 +11,7 @@
 |core|0209~0220|스프링 핵심 원리 - 기본편|[🎬](https://inf.run/xStb)|
 |item-service, servlet, springmvc|0304~0308|스프링 MVC 1편 - 백엔드 웹 개발 핵심 기술|[🎬](https://inf.run/wSFR)|
 |thymeleaf-basic, form, message, validation, login, exception, typeconverter|0309~0321|스프링 MVC 2편 - 백엔드 웹 개발 활용 기술|[🎬](https://inf.run/7sz4)|
-
+|jdbc|0511, 0607~0608|스프링 DB 1편 - 데이터 접근 핵심 원리|[🎬](https://inf.run/Wys3)|
 - "모든 개발자를 위한 HTTP 웹 기본 지식"은 실습 코드 X, 수강 완료 (0220~0222)
 - 스프링 핵심원리 고급편은 천천히 시작할 예정!
 ***
