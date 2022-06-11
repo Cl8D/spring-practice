@@ -1,0 +1,13 @@
+JPA은 PersistenceException / IllegalStateException / EllegalArgumentException이 발생되는데,
+이를 스프링 예외 추상화인 DataAccessException으로 반환을 어케 할까?
+==> @Repository 이용!
+
+1) @Repository가 붙은 클래스는 컴포넌트 스캔
+2) @Repository가 붙은 클래스는 예외 변환 AOP의 적용 대상임
+-> JPA 관련 예외가 발생하면 변환기를 통해서 발생한 예외를 스프링 데이터 접근 예외로 변환한다.
+(JpaItemRepositoryV1 -> AOP proxy로 PersistenceException을 넘겨주면, 여기서 예외를 변환해줘서 서비스 계층에 전달해줌)
+
+cf) 스프링부트는 PersistenceExceptionTranslationPostProcessor를 자동으로 등록하는데,
+@Repository를 AOP proxy로 만드는 어드바이저가 등록된다!
+(Repository의 class를 찍어보면 얘가 프록시 객체인 걸 볼 수 있음)
+cf) AOP는 트랜잭션도 해주고... 예외 변환도 해줌...! 사실 트랜잭션만 있어도 프록시 객체가 생성되기는 함!

@@ -18,7 +18,9 @@ import javax.sql.DataSource;
 //@Import(JdbcTemplateV1Config.class)
 //@Import(JdbcTemplateV2Config.class)
 //@Import(JdbcTemplateV3Config.class)
-@Import(MyBatisConfig.class)
+//@Import(MyBatisConfig.class)
+//@Import(JpaConfig.class)
+@Import(SpringDataJpaConfig.class)
 // 컨트롤러만 컴포넌트 스캔을 사용해주기. (나머지는 수동 등록했음!)
 // 컴포넌트 스캔의 경로를 hello.itemservice.web의 하위로 지정하였음
 @SpringBootApplication(scanBasePackages = "hello.itemservice.web")
