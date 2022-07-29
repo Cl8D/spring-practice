@@ -13,6 +13,7 @@
 |thymeleaf-basic, form, message, validation, login, exception, typeconverter|0309~0321|스프링 MVC 2편 - 백엔드 웹 개발 활용 기술|[🎬](https://inf.run/7sz4)|
 |jdbc|0511, 0607~0608|스프링 DB 1편 - 데이터 접근 핵심 원리|[🎬](https://inf.run/Wys3)|
 |itemservice-db, springtx|0608~0613|스프링 DB 2편 - 데이터 접근 활용 기술|[🎬](https://inf.run/SL1C)|
+|advanced, springtx, proxy, aop|0420, 0613, 0723~0729|스프링 핵심 원리 - 고급편|[🎬](https://inf.run/T8uS)|
 - "모든 개발자를 위한 HTTP 웹 기본 지식"은 실습 코드 X, 수강 완료 (0220~0222)
 ***
 
@@ -26,5 +27,7 @@
 |data-jpa|0328|실전! 스프링 데이터 JPA|[🎬](https://inf.run/we4h)|
 |querydsl|0329~0330|실전! Querydsl|[🎬](https://inf.run/wSQg)|
 - 0322~0325 : Spring Security, JWT 공부 - 실습코드: [📁](https://github.com/Cl8D/SpringSecurity)
-- 0331~ing : 프로젝트 준비 중...😚
 ***
+
+- 현재는 프로젝트 진행 중입니다!
+- 0730~ing : Spring 완전 정복 코스를 다시 복습할 예정입니다 :)
