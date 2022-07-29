@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 
 /**
- * application.properties
+ * application.yml
  * spring.aop.proxy-target-class=true CGLIB
  * : 구체클래스를 상속받아서 프록시 객체 생성
  * spring.aop.proxy-target-class=false JDK 동적 프록시
