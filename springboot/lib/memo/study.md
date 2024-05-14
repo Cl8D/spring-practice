@@ -1,0 +1,12 @@
+- 스프링 부트는 여러 라이브러리의 버전들을 직접 관리해준다.
+- 버전 관리 기능을 활용하기 위해서는 io.spring.dependency-management 플러그인을 추가해야 한다.
+  - 버전 정보를 명시하지 않아도 된다!
+  - spring-boot-dependencies를 상속받아 bom 정보를 활용하게 된다.
+ - [링크](https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-dependencies/build.gradle)
+   - bom에 정의되어 있는 버전을 자동으로 사용하게 된다. (물론 여기에 없으면 버전 정보를 직접 명시해야 함)
+   - 알아서 스프링 부트 버전에 맞는 최적화된 라이브러리 버전을 제공해준다...!
+ -> 근데 만약 이런 것도 귀찮다면? : 스프링 부트 스타터를 활용하자!
+   - 스프링 부트 스타터는 특정 기능에 필요한 의존성을 한번에 관리해주는 라이브러리 집합이다.
+    - 예를 들어, spring-boot-starter-web은 웹 개발에 필요한 의존성을 한번에 관리해준다.
+- 만약 외부 라이브러리의 버전을 바꾸고 싶다면,
+  - ext['tomcat.version']='10.1.4' 요런 식으로 명시해주면 편리하게 변경할 수 있다.
