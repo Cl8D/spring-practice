@@ -1,0 +1,5 @@
+my_order_total{class="hello.order.v1.OrderServiceV1", instance="localhost:8080", job="spring-actuator", method="cancel"} 1
+my_order_total{class="hello.order.v1.OrderServiceV1", instance="localhost:8080", job="spring-actuator", method="order"} 1
+
+- 메트릭 이름이 my_order -> my_order_total로 변경됨
+- v1과 v2의 결과는 동일!
