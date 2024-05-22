@@ -49,3 +49,20 @@
   - 프로메테우스 설정: 프로메테우스가 애플리케이션의 메트릭을 주기적으로 수집하도록 설정하기
 
 ---
+
+### 프로메테우스
+- 프로메테우스는 기본적으로 . 대신에 _ 포맷을 사용한다.
+- 로그 수처럼 지속적으로 숫자가 증가하는 메트릭을 '카운터' 라고 하며, 카운트 메트릭은 항상 마지막에 _total 을 붙인다.
+- 프로메테우스 설정 파일 (prometheus.yml) 을 수정하게 되면 메트릭을 주기적으로 수집하도록 설정할 수 있다.
+```
+- job_name: "spring-actuator"
+  metrics_path: '/actuator/prometheus'
+  scrape_interval: 1s
+  static_configs:
+- targets: ['localhost:8080']
+```
+- job_name: 프로메테우스가 수집하는 대상의 이름
+- metrics_path: 수집할 메트릭의 경로
+- scrape_interval: 수집 주기 (기본 값은 1m, 이것 역시 성능에 영향을 줄 수 있기 때문에 실무에서는 고려해서 설정하기)
+- targets: 수집할 대상의 주소
+

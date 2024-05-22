@@ -1,0 +1,37 @@
+{
+  "name": "my.order",
+  "description": "order",
+  "measurements": [
+    {
+      "statistic": "COUNT",
+      "value": 2.0
+    }
+  ],
+  "availableTags": [
+    {
+      "tag": "result",
+      "values": [
+        "success"
+      ]
+    },
+    {
+      "tag": "exception",
+      "values": [
+        "none"
+      ]
+    },
+    {
+      "tag": "method",
+      "values": [
+        "cancel",
+        "order"
+      ]
+    },
+    {
+      "tag": "class",
+      "values": [
+        "hello.order.v2.OrderServiceV2"
+      ]
+    }
+  ]
+}
