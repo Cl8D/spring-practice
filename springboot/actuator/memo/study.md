@@ -66,3 +66,38 @@
 - scrape_interval: 수집 주기 (기본 값은 1m, 이것 역시 성능에 영향을 줄 수 있기 때문에 실무에서는 고려해서 설정하기)
 - targets: 수집할 대상의 주소
 
+
+### 프로메테우스 기본 기능 (http://localhost:9090/graph)
+```
+http_server_requests_seconds_count{error="none", exception="none", instance="localhost:8080", job="spring-actuator", method="GET", outcome="SUCCESS", status="200", uri="/actuator/prometheus"} 40
+```
+- 기본적인 검색 시 나오는 값들을 마이크로미터에서는 '태그(Tag)' 라고 하며, 프로메테우스에서는 '레이블(Label)' 이라고 한다.
+  - 태그: error, exception, instance, job...
+- 끝에 나오는 숫자가 바로 메트릭의 값이다.
+  - 40 이라는 값
+
+
+- 조회 방식
+  - Table -> Evaluation Time을 수정하여 과거 시간에 대한 메트릭을 조회할 수 있음
+  - Graph -> 메트릭을 그래프로 조회할 수 있음
+
+
+- 필터링
+  - {} 중괄호를 활용하여 필터링을 진행할 수 있다.
+  - = : 제공된 문자열과 동일한 레이블 선택
+  - != : 제공된 문자열과 다른 레이블 선택
+  - =~ : 정규식과 일치하는 레이블 선택
+  - !~ : 정규식과 일치하지 않는 레이블 선택
+
+
+- 쿼리 함수
+  - sum(metric_name) : 값의 합계를 구한다
+  - sum by(a, b)(metric_name): SQL에서 제공하는 group by 와 비슷하다
+  - count(metric_name): 메트릭 자체의 수에 대한 카운트 값
+  - topk(n, metric_name) : 상위 n개의 메트릭 조회
+  - metric_name offset 10m : 현재를 기준으로 10분 이전의 데이터를 반환
+  - rate(metric_name[5m]) : 5분 간격으로 메트릭의 변화량을 반환
+  - metric_name[1m]: 지난 1분 동안의 모든 기록값 선택. 차트에 바로 표현이 불가능하다.
+  - increase(metric_name[1m]): 1분 동안의 증가량을 반환
+  - irate(metric_name[1m]): 1분 동안의 증가율을 반환
+  - delta(metric_name[1m]): 1분 동안의 변화량을 반환

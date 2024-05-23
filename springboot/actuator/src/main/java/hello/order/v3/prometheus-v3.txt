@@ -1,0 +1,20 @@
+my_order_seconds_count{class="hello.order.v3.OrderServiceV3", instance="localhost:8080", job="spring-actuator", method="cancel"} 3
+my_order_seconds_count{class="hello.order.v3.OrderServiceV3", instance="localhost:8080", job="spring-actuator", method="order"} 3
+
+my_order_seconds_sum{class="hello.order.v3.OrderServiceV3", instance="localhost:8080", job="spring-actuator", method="cancel"} 0.289574958
+my_order_seconds_sum{class="hello.order.v3.OrderServiceV3", instance="localhost:8080", job="spring-actuator", method="order"} 0.636793292
+
+my_order_seconds_max{class="hello.order.v3.OrderServiceV3", instance="localhost:8080", job="spring-actuator", method="cancel"} 0.372672709
+my_order_seconds_max{class="hello.order.v3.OrderServiceV3", instance="localhost:8080", job="spring-actuator", method="order"} 0.636793292
+
+- seconds_count: 실행 수
+- seconds_sum: 실행 시간 합
+- seconds_max: 실행 시간 최대
+
+- 응용) 평균 실행 시간 구하기
+- my_order_seconds_sum { } / my_order_seconds_count { }
+
+{class="hello.order.v3.OrderServiceV3", instance="localhost:8080", job="spring-actuator", method="cancel"} 0.2920371526666667
+{class="hello.order.v3.OrderServiceV3", instance="localhost:8080", job="spring-actuator", method="order"} 0.568255139
+
+- v3와 v4의 결과는 동일!

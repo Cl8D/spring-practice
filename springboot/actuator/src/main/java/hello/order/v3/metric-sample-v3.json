@@ -1,0 +1,34 @@
+{
+  "name": "my.order",
+  "description": "order",
+  "baseUnit": "seconds",
+  "measurements": [
+    {
+      "statistic": "COUNT",
+      "value": 2.0
+    },
+    {
+      "statistic": "TOTAL_TIME",
+      "value": 0.956936333
+    },
+    {
+      "statistic": "MAX",
+      "value": 0.577153125
+    }
+  ],
+  "availableTags": [
+    {
+      "tag": "method",
+      "values": [
+        "cancel",
+        "order"
+      ]
+    },
+    {
+      "tag": "class",
+      "values": [
+        "hello.order.v3.OrderServiceV3"
+      ]
+    }
+  ]
+}
