@@ -101,3 +101,54 @@ http_server_requests_seconds_count{error="none", exception="none", instance="loc
   - increase(metric_name[1m]): 1분 동안의 증가량을 반환
   - irate(metric_name[1m]): 1분 동안의 증가율을 반환
   - delta(metric_name[1m]): 1분 동안의 변화량을 반환
+
+### 게이지와 카운터
+- MeterRegistry, 스프링을 통해서 주입받고 여기에서 카운터나 게이지를 등록할 수 있다.
+
+- 게이지 (Gauge)
+  - 임의로 오르내릴 수 있는 단일 숫자 값
+  - 값의 현재 상태를 볼 때 사용하며, 증가하거나 감소가 가능하다.
+    - 카운터의 경우 값이 감소가 불가능하지만, 게이지는 감소가 가능하다는 점이 큰 차이점.
+  - CPU 사용량, 메모리 사용량, 사용 중인 커넥션
+
+- 카운터 (Counter)
+  - [문서](https://prometheus.io/docs/concepts/metric_types/#counter)
+  - 단순하게 증가하는 단일 누적 값 (누적해서 증가하는 값)
+    - 단일 값 그 자체
+    - 하나씩 증가하는 값, 혹은 0으로 초기화
+    - 누적된 값이기 때문에 전체 값을 포함한다
+    - _total과 같은 suffix가 붙는 게 일반적
+  - HTTP 요청 수, 에러 수, 배치 처리 수
+  - 특정 시간에 얼마나 많은 요청이 들어왔는지 확인하기 위해 increase, rate 같은 함수를 지원한다.
+
+- 타이머 (Timer)
+  - 카운터와 유사하지만 시간을 측정할 수 있다. 타임 윈도우를 통해 1~3분마다 최대 실행 시간이 재계산된다.
+  - seconds_count: 누적된 실행 수
+  - seconds_sum: 실행 시간의 합계
+  - seconds_max: 실행 시간의 최대값 (게이지 느낌)
+
+
+- increase()
+  - 지정한 시간 단위별로 증가하는 값 확인
+  - ex. increase(http_server_requests_seconds_count{uri="/log"}[1m])
+- rate()
+  - 범위 벡터에서 고객의 요청이 얼마나 증가했는지 확인, 초당 얼마나 증가했는지.
+  - increase()는 숫자를 카운트 한다면, rate()는 초당 평균을 나누어서 계산하게 된다.
+  - ex. rate(data[1m]) -> 60을 나눈 값
+- irate()
+  - 범위 벡터에서 초당 순간 증가율을 계산. 급격하게 증가한 내용을 확인하기 좋음.
+- 쿼리 관련 [공식 문서](https://prometheus.io/docs/prometheus/latest/querying/basics/)
+
+
+---
+
+### 모니터링 활용하기
+- CPU 사용량 확인하기
+- JVM 메모리 사용량 확인하기
+  -> JVM Heap, JVM Non-Heap, JVM Buffer Pool, JVM GC 등
+- JDBC Connection Pool 확인하기
+  -> Connection Close가 되지 않고 계속 Active 상태로 남아있을 때
+  -> Hikari CP Active, IDLE, Pending 상태 커넥션 확인하기 (Connection Timeout 확인)
+  -> Long Query 등으로 인해 응답 시간이 너무 길어져서 커넥션 반환이 안 되어서 발생한다든지...
+- 에러 로그 확인하기
+  -> 에러 로그가 높아지면 현재 프로그램에 어떠한 문제가 있다는 것이니까

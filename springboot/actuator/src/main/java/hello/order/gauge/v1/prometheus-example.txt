@@ -1,0 +1,1 @@
+my_stock{instance="localhost:8080", job="spring-actuator"} 100
